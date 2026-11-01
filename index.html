@@ -322,7 +322,7 @@ th { background: #f8fafc; }
 
   <main class="main">
     <header class="topbar">
-      <h1 id="pageTitle">Inventory Dashboard</h1>
+      <h1 id="pageTitle">Inventory Dashboard  --  hello!! Admin</h1>
       <div class="admin">
         Admin
         <button id="logoutButton" class="primary">Logout</button>
@@ -490,7 +490,14 @@ th { background: #f8fafc; }
 </div>
 
 <script>
+  
+// Global application variables
+let products = [];
+let settings = { threshold: 10 };
+let editingId = null;
+
 // Python se products mangwana
+
 async function loadProducts() {
   const res = await fetch("/api/products");   // Flask ke /api/products route ko call
   const products = await res.json();
@@ -859,6 +866,24 @@ document.getElementById("productsTable").addEventListener("click", async e => {
 
 /* SEARCH */
 document.getElementById("productSearch").addEventListener("input", render);
+
+const searchBox = document.getElementById("productSearch");
+const search = String(searchBox?.value || "").trim().toLowerCase();
+
+const filteredProducts = products.filter(p => {
+  const name = String(p.name || "").toLowerCase();
+  const category = String(p.category || "").toLowerCase();
+  const id = String(p.id ?? "").toLowerCase();
+
+  return (
+    name.includes(search) ||
+    category.includes(search) ||
+    id.includes(search)
+  );
+});
+
+document.getElementById("productsTable").innerHTML =
+  productTable(filteredProducts, true);
 
 /* SETTINGS */
 document.getElementById("settingsForm").addEventListener("submit", async e => {
